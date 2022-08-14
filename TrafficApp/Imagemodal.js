@@ -11,7 +11,7 @@ var i = 0;
 return(
  
 <Modal visible={props.modal}>
-<Text style={{fontSize:20}}>
+<Text style={{fontSize:20, color:'black'}}>
 Specific road{"\n"}{props.date}
 </Text>
 <Button title="Back" onPress={props.setvisibility}/>
@@ -24,7 +24,7 @@ Specific road{"\n"}{props.date}
           uri: img,
         }}
         style={{width: 400, height: 400}} /> 
-     <Text>{props.textarra[i++]}</Text>
+     <Text style={{color:'black',fontSize:15, marginBottom:10}}>{props.textarra[i++]}</Text>
   </View>
   )}
 </ScrollView>
