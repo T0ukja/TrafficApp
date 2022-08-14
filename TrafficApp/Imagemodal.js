@@ -1,20 +1,35 @@
-import { ProgressViewIOSComponent } from "react-native";
-import React from "react";
-import { Modal,Text,Button,Image} from "react-native";
+import { ProgressViewIOSComponent, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Modal,Text,Button,Image,View} from "react-native";
+
+
 
 const Imagemodal=(props)=>{
+
+var i = 0;
+
 return(
+ 
 <Modal visible={props.modal}>
-<Text>
-    Moro{props.url}
+<Text style={{fontSize:20}}>
+Specific road{"\n"}{props.date}
 </Text>
 <Button title="Back" onPress={props.setvisibility}/>
-<Image
-        
-        source={{
-          uri: props.url,
+<>
+<ScrollView>
+
+{props.arra.map(img =>  <View>
+  
+  <Image source={{
+          uri: img,
         }}
-        style={{width: 400, height: 400}} />
+        style={{width: 400, height: 400}} /> 
+     <Text>{props.textarra[i++]}</Text>
+  </View>
+  )}
+</ScrollView>
+
+</>
 </Modal>
 );
 }

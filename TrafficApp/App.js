@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {Button, ActivityIndicator, StyleSheet,FlatList, Text, TextInput, View,TouchableOpacity} from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import Imagemodal from './Imagemodal';
 export default App = () => {
   const [isLoading, setLoading] = useState(true);
@@ -8,12 +7,15 @@ export default App = () => {
   const [text, onChangeText] = useState();
   const [url, seturl]= useState();
   const [modal,setmodal]=useState(false);
+  const [date,setdate]=useState();
+  const [arra, setarra]=useState([]);
+  const [textarra,settextarra]=useState([]);
   var filteredData;
-  const getMovies = async () => {
+  const gettraffic = async () => {
      try {//C01502
-      const response = await fetch('https://tie.digitraffic.fi/api/v1/data/camera-data/');
+      const response = await fetch('https://tie.digitraffic.fi/api/v3/metadata/camera-stations');
       const json = await response.json();
-      setData(json.cameraStations);
+      setData(json.features);
     } catch (error) {
       console.error(error);
     } finally {
@@ -22,67 +24,55 @@ export default App = () => {
   }
 
   useEffect(() => {
-    getMovies();
+    gettraffic();
   }, []);
 
+  const trafficsearch = async (id) => {
+    try {
+     const response = await fetch('https://tie.digitraffic.fi/api/v3/metadata/camera-stations');
+     const json = await response.json();
+     const data = json.features.filter((dataa) => {
+ return dataa.properties.municipality.search(id) != -1;
+  })
+    
+     setData(data);
+   } catch (error) {
+     console.error(error);
+   } finally {
+     setLoading(false);
+   }
+ }
 
   const valueInputHandler=(enteredText)=>{
     onChangeText(enteredText)
-    // filteredData = data.cameraPresets.filter(asd => asd.presentationName == "Oulu") 
-// console.log(filteredData)
-//console.log(data.filter(d=>d.cameraPresets.id.includes("C")))
-/*const filtered = data.filter((a)=>{
-  return a.presentationName === "Porvoo"})*/
- // const pizzerie = data.filter( (item) => {
- //   return item.cameraPresets.presentationName === "Porvoo"
-    
- // })
-/*
- var dataa = data.filter((item) => {
-  var arvo = item.cameraPresets[0].presentationName
-    return arvo.includes('P')
-     
-        
-})
-*/
-//var dataa = data.filter(item => item.cameraPresets[id].presentationName === "Porvoo");
-
-
-/*
-
- var dataa = data.filter(function(item){
-  return item.id == "C01502";         
-})
-*/
-
-//  console.log(pizzerie)
-///console.log(data.map((camera) => camera.cameraPresets.presentationName == "Porvoo"))
-//setData(data.filter(d=>d.cameraPresets.presentationName == "Oulu"))
+    trafficsearch(text)
     }
     const setvisibility=()=>{
       setmodal(!modal)
     }
-const getpicture=(props)=>{
-  seturl(props);
+const getpicture=(url,date)=>{
+ setarra(url.map((item) => (item.imageUrl)))
+ settextarra(url.map((item) => (item.presentationName)))
+console.log(arra, "Arra")
+  setdate(date);
   setmodal(!modal)
+  
+
 }
 
-    const getinformation=()=>{
-      const dataa = data.filter(obj => obj.cameraPresets.find(o => o.presentationName == text
-        ));
-        console.log(text)
-         console.log(dataa);
-         setData(dataa)
-    }
+  
   return (
     <View style={{ flex: 1, padding: 24 }}>
-   <Imagemodal modal={modal} url={url} setvisibility={setvisibility} />
+   <Imagemodal textarra={textarra}date={date}modal={modal} arra={arra} setvisibility={setvisibility} />
+   <Text style={{textAlign:'center', fontSize:20, color:'black'}}>
+    Search inputbox
+   </Text>
    <TextInput
         style={styles.input}
         onChangeText={valueInputHandler}
         value={text}
+        placeholder={"Type city to filter results"}
       />
-      <Button title="Button" onPress={getinformation} />
    
      
       {isLoading ? <ActivityIndicator/> : (
@@ -90,8 +80,8 @@ const getpicture=(props)=>{
       data={data}
       keyExtractor={({ id }, index) => id}
       renderItem={({ item }) => (
-        <TouchableOpacity onPress={()=>getpicture(item.cameraPresets[0].imageUrl)}>
-        <Text style={styles.item}>{item.roadStationId}/{item.cameraPresets[0].presentationName}</Text>
+        <TouchableOpacity onPress={()=>getpicture(item.properties.presets,item.properties.names.fi)}>
+        <Text style={styles.item}>{item.properties.municipality}/{item.properties.province}</Text>
 
         </TouchableOpacity>
          
@@ -110,11 +100,13 @@ const styles = StyleSheet.create({
   margin: 12,
   borderWidth: 1,
   padding: 10,
+  color:'black'
 },
 box:{
 borderWidth:2,
 },
 item:{
+  color: 'black',
   borderWidth:2,
   fontSize:15,
   margin:5,
