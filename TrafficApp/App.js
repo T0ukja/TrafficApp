@@ -45,7 +45,7 @@ export default App = () => {
 
   const valueInputHandler=(enteredText)=>{
     onChangeText(enteredText)
-    trafficsearch(text)
+   
     }
     const setvisibility=()=>{
       setmodal(!modal)
@@ -71,9 +71,9 @@ console.log(arra, "Arra")
         style={styles.input}
         onChangeText={valueInputHandler}
         value={text}
-        placeholder={"Type city to filter results"}
+        placeholder={"Type city"}
       />
-   
+   <Button title="Filter" onPress={()=>trafficsearch(text)}/>
      
       {isLoading ? <ActivityIndicator/> : (
       <FlatList style ={styles.box}
@@ -81,7 +81,7 @@ console.log(arra, "Arra")
       keyExtractor={({ id }, index) => id}
       renderItem={({ item }) => (
         <TouchableOpacity onPress={()=>getpicture(item.properties.presets,item.properties.names.fi)}>
-        <Text style={styles.item}>{item.properties.municipality}/{item.properties.province}</Text>
+        <Text style={styles.item}>{item.properties.municipality}/{item.properties.name}</Text>
 
         </TouchableOpacity>
          
