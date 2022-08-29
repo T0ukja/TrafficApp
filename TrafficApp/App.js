@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {Button, ActivityIndicator, StyleSheet,FlatList, Text, TextInput, View,TouchableOpacity} from 'react-native';
 import Imagemodal from './Imagemodal';
+import Messagemodal from './Messagemodal';
 export default App = () => {
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState([]);
@@ -9,6 +10,7 @@ export default App = () => {
   const [modal,setmodal]=useState(false);
   const [date,setdate]=useState();
   const [arra, setarra]=useState([]);
+  const [messagevis, setmessagevis] = useState(false);
   const [textarra,settextarra]=useState([]);
   var filteredData;
   const gettraffic = async () => {
@@ -63,6 +65,7 @@ console.log(arra, "Arra")
   
   return (
     <View style={{ flex: 1, padding: 24 }}>
+      <Messagemodal messagevis={messagevis} setmessagevis={setmessagevis}/>
    <Imagemodal textarra={textarra}date={date}modal={modal} arra={arra} setvisibility={setvisibility} />
    <Text style={{textAlign:'center', fontSize:20, color:'black'}}>
     Search inputbox
@@ -74,7 +77,8 @@ console.log(arra, "Arra")
         placeholder={"Type city"}
       />
    <Button title="Filter" onPress={()=>trafficsearch(text)}/>
-     
+   <Button title="To traffic messages" onPress={()=>setmessagevis(!messagevis)}/>
+
       {isLoading ? <ActivityIndicator/> : (
       <FlatList style ={styles.box}
       data={data}
